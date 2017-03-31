@@ -1,6 +1,7 @@
 import base64
 
 import cryptopals.xor
+import cryptopals.aes
 
 def base64_to_bytes(ba):
     return base64.b64decode(ba)

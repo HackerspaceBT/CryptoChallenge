@@ -1,7 +1,7 @@
 from math import sqrt
 import string
 
-letter_score = [2+f/1000. for f in [
+letter_score = [f/1000. for f in [
     81.67,
     14.92,
     27.82,
@@ -29,17 +29,23 @@ letter_score = [2+f/1000. for f in [
     19.74,
     0.74
 ]]
-digit_score = 0.1
-punct_score = 0.1
-blank_score = 1
+digit_score = 0.005
+punct_score = 0.001
+blank_score = 0
 else_score = -1
 
-char_scores = [ letter_score[ord(chr(a).lower())-ord('a')] if chr(a) in string.ascii_letters else
-                digit_score if chr(a) in string.digits else
-                punct_score if chr(a) in string.punctuation else
-                blank_score if chr(a) in string.whitespace else
-                else_score
-                for a in range(256)]
+char_scores = [else_score]*256
+for c in [ord(c) for c in string.ascii_lowercase]:
+    char_scores[c] = sqrt(letter_score[c-ord('a')])
+for c in [ord(c) for c in string.ascii_uppercase]:
+    char_scores[c] = sqrt(letter_score[c-ord('A')])
+for c in [ord(c) for c in string.digits]:
+    char_scores[c] = digit_score
+for c in [ord(c) for c in string.punctuation]:
+    char_scores[c] = punct_score
+for c in [ord(c) for c in string.whitespace]:
+    char_scores[c] = blank_score
+char_scores[ord(' ')] = 0.1
 
 def xor_buffers(a, b):
     if len(a) < len(b):
@@ -62,7 +68,7 @@ def find_best_single_xor(s):
 
     cipher_scores = [ score_buffer(xor_single(s, i)) for i in range(256) ]
 
-    return cipher_scores.index(max(cipher_scores))
+    return cipher_scores.index(max(cipher_scores)), max(cipher_scores)
 
 def _popcount(c):
     n=0
@@ -90,5 +96,5 @@ def find_best_xor_cipher(s):
             best_keysize = keysize
             best_score   = score
 
-    return bytes([ find_best_single_xor(s[i::best_keysize])
+    return bytes([ find_best_single_xor(s[i::best_keysize])[0]
                    for i in range(best_keysize) ])
