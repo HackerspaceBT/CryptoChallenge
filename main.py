@@ -85,7 +85,7 @@ def q08():
 
     for i,l in enumerate(lines):
         if aes.detect_ecb(l):
-            print("Line ", i, "is AES-ECB")
+            print("Line", i, "is AES-ECB")
             
 def allq():
     [ f() for f in challenges ]
