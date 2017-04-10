@@ -86,9 +86,23 @@ def q08():
     for i,l in enumerate(lines):
         if aes.detect_ecb(l):
             print("Line", i, "is AES-ECB")
-            
+
+@challenge(9)
+def q09():
+    plaintext = b"YELLOW SUBMARINE"
+    padded = aes.pkcs7_pad(plaintext, 20)
+    wanted = b"YELLOW SUBMARINE\x04\x04\x04\x04"
+
+    assert(padded == wanted)
+
 def allq():
     [ f() for f in challenges ]
+
+def reload():
+    import importlib
+    importlib.reload(cryptopals)
+    importlib.reload(cryptopals.aes)
+    importlib.reload(cryptopals.xor)
     
 if __name__ == "__main__":
     allq()

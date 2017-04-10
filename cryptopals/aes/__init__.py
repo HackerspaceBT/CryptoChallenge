@@ -17,3 +17,15 @@ def detect_ecb(c):
 
     return False
         
+def pkcs7_pad(buf, block_len = 16):
+    mod = len(buf) % block_len
+    pad_len = block_len - mod
+    return buf + bytes([pad_len]*pad_len)
+
+def pkcs7_check(buf):
+    pad_len = buf[-1]
+
+    if buf[-pad_len:] == bytes([pad_len]*pad_len):
+        return True, buf[0:-pad_len]
+    else:
+        return False, None
