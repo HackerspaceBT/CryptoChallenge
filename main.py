@@ -76,7 +76,7 @@ def q06():
 @challenge(7)
 def q07():
     ciphertext = base64_to_bytes(open('data/7.txt').read().replace('\n', ''))
-    plaintext  = aes.aes_decrypt(b'YELLOW SUBMARINE', ciphertext)
+    plaintext  = aes.ecb_decrypt(b'YELLOW SUBMARINE', ciphertext)
 
 @challenge(8)
 def q08():
@@ -84,7 +84,7 @@ def q08():
               for l in open('data/8.txt').readlines() ]
 
     for i,l in enumerate(lines):
-        if aes.detect_ecb(l):
+        if aes.ecb_detect(l):
             print("Line", i, "is AES-ECB")
 
 @challenge(9)
@@ -94,6 +94,13 @@ def q09():
     wanted = b"YELLOW SUBMARINE\x04\x04\x04\x04"
 
     assert(padded == wanted)
+
+@challenge(10)
+def q10():
+    ciphertext = base64_to_bytes("".join(open('data/10.txt').readlines()))
+    plaintext = aes.cbc_decrypt(b"YELLOW SUBMARINE",
+                                ciphertext,
+                                bytes([0]*16))
 
 def allq():
     [ f() for f in challenges ]
